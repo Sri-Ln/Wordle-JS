@@ -59,6 +59,20 @@ body {
   grid-column: span 3;
 }
 
+.next-button{
+  height: 70px;
+  width:100%;
+  display: flex;
+  justify-content: center;
+  margin: 10px 0px;
+}
+
+.key.large4 {
+  height: 70px;
+  width: 200px;
+  background-color: green;
+}
+
 .key > svg {
   width: 1.75em;
   height: 1.75em;
@@ -92,7 +106,7 @@ body {
   grid-template-columns: repeat(5, 4em);
   grid-template-rows: repeat(6, 4em);
   gap: .25em;
-  margin-bottom: 1em;
+  /* margin-bottom: 1em; */
 }
 
 .tile {
