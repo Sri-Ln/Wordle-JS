@@ -4,7 +4,7 @@
 }
 
 body {
-  background-color: hsl(240, 3%, 7%);
+  background: linear-gradient(107deg, rgb(28, 28, 70) 24.17%, rgb(11, 11, 17) 69.19%);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -18,6 +18,19 @@ body {
   grid-template-columns: repeat(20, minmax(auto, 1.25em));
   grid-auto-rows: 3em;
   gap: .25em;
+  justify-content: center;
+  border:2px solid white;
+  width: max-content;
+  padding: 10px;
+}
+
+.logo-covalent{
+  position: absolute;
+  width: 100px;
+}
+
+.keyboard-grid{
+  display: flex;
   justify-content: center;
 }
 
@@ -44,6 +57,20 @@ body {
 
 .key.large {
   grid-column: span 3;
+}
+
+.next-button{
+  height: 70px;
+  width:100%;
+  display: flex;
+  justify-content: center;
+  margin: 10px 0px;
+}
+
+.key.large4 {
+  height: 70px;
+  width: 200px;
+  background-color: green;
 }
 
 .key > svg {
@@ -79,7 +106,7 @@ body {
   grid-template-columns: repeat(5, 4em);
   grid-template-rows: repeat(6, 4em);
   gap: .25em;
-  margin-bottom: 1em;
+  /* margin-bottom: 1em; */
 }
 
 .tile {
