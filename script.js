@@ -1,12 +1,15 @@
-const targetWords =[
+const targetWords = [
   "cloud",
   "batch",
   "azure",
   "react",
-  "serve"
+  "serve",
+  "mongo",
+  "slurm"
 ]
 
-const dictionary =[
+const dictionary = [
+  "ggrew",
   "aahed",
   "aalii",
   "aargh",
@@ -12983,7 +12986,9 @@ const dictionary =[
   "batch",
   "azure",
   "react",
-  "serve"
+  "serve",
+  "mongo",
+  "slurm"
 ]
 
 
@@ -12993,6 +12998,7 @@ const DANCE_ANIMATION_DURATION = 500
 const keyboard = document.querySelector("[data-keyboard]")
 const alertContainer = document.querySelector("[data-alert-container]")
 const guessGrid = document.querySelector("[data-guess-grid]")
+var checkActive = false;
 
 startInteraction()
 
@@ -13004,8 +13010,8 @@ function getRandomElement(array) {
 }
 
 let targetWord = getRandomElement(targetWords);
-  console.log("TargetWord:",targetWord);
-  
+// console.log("TargetWord:", targetWord);
+
 let guessWord;
 function startInteraction() {
   document.addEventListener("click", handleMouseClick)
@@ -13021,6 +13027,20 @@ function countOccurrences(str, letter) {
   return str.split(letter).length - 1;
 }
 
+
+function updateDisplay() {
+  //Formated Display
+  // phrs = hrs < 10 ? '0' + hrs : hrs;
+  pmin = min < 10 ? '0' + min : min;
+  psec = sec < 10 ? '0' + sec : sec;
+  pms = ms < 10 ? '0' + ms : ms;
+  //Output
+  // document.querySelector('.hrs').innerText = phrs;
+  document.querySelector('.min').innerText = pmin;
+  document.querySelector('.sec').innerText = psec;
+  document.querySelector('.ms').innerText = pms;
+}
+
 function handleMouseClick(e) {
   if (e.target.matches("[data-key]")) {
     pressKey(e.target.dataset.key)
@@ -13033,6 +13053,11 @@ function handleMouseClick(e) {
   }
 
   if (e.target.matches("[data-next]")) {
+    //condition to clear out data and play next game
+    hrs = min = sec = ms = 0;
+    clearInterval(startTimer);
+    updateDisplay();
+    // btnStart.classList.remove('start-active');
     clearTileAttributesAndValues()
     targetWord = getRandomElement(targetWords);
     const nextButtonToRemove = document.querySelector("[data-next]");
@@ -13048,20 +13073,46 @@ function handleMouseClick(e) {
   }
 }
 
+let timerStarted = false;
+
 function handleKeyPress(e) {
+
   if (e.key === "Enter") {
-    submitGuess()
-    return
+    submitGuess();
+    return;
   }
 
   if (e.key === "Backspace" || e.key === "Delete") {
-    deleteKey()
-    return
+    deleteKey();
+    return;
   }
 
   if (e.key.match(/^[a-z]$/)) {
-    pressKey(e.key)
-    return
+    checkActive = true;
+    pressKey(e.key);
+
+    // Start the timer only if it hasn't been started yet
+    if (!timerStarted) {
+      startTimer = setInterval(() => {
+        ms++;
+        if (ms == 100) {
+          sec++;
+          ms = 0;
+        }
+        if (sec == 60) {
+          min++;
+          sec = 0;
+        }
+        if (min == 60) {
+          hrs++;
+          min = 0;
+        }
+        updateDisplay();
+      }, 10);
+      timerStarted = true;
+    }
+
+    return;
   }
 }
 
@@ -13131,10 +13182,23 @@ function flipTile(tile, index, array, guess) {
   tile.addEventListener(
     "transitionend",
     () => {
+      // console.log("Target word: ", targetWord);
+      // console.log("guess", guess);
+      const guessCharCout = (guess.split(letter).length - 1);
+      // console.log("Guess Char count:", guessCharCout);
+      const targetCharCout = (targetWord.split(letter).length - 1);
+      // console.log("targetCharCout:", targetCharCout);
+      if (guessCharCout > 1) {
+        const guessIndex = guess.indexOf(letter);
+        // console.log("guessIndex", guessIndex);
+        const targetIndex = targetWord.indexOf(letter);
+        // console.log("targetIndex", targetIndex);
+      }
       tile.classList.remove("flip")
       const letterCountInTarget = countOccurrences(targetWord, letter);
       const letterCountInGuess = countOccurrences(guess, letter);
-      if(targetWord.includes(letter)){
+      // this condition needs a rework as if there multiple occurances of a letter in a word then the letter is marked as present
+      if (targetWord.includes(letter)) {
         if (targetWord[index] === letter) {
           tile.dataset.state = "correct"
           key.classList.add("correct")
@@ -13214,23 +13278,29 @@ function shakeTiles(tiles) {
   })
 }
 
-function createNextGameButton(){
+
+
+function createNextGameButton() {
   const nextButton = document.createElement("button");
-    nextButton.setAttribute("data-next", "");
-    nextButton.classList.add("key", "large4");
-    nextButton.textContent = "Try another";
-    const nextButtonContainer = document.querySelector(".next-button");
-    nextButtonContainer.appendChild(nextButton);
-    startInteraction();
+  nextButton.setAttribute("data-next", "");
+  nextButton.classList.add("key", "large4");
+  nextButton.textContent = "Try another";
+  const nextButtonContainer = document.querySelector(".next-button");
+  nextButtonContainer.appendChild(nextButton);
+  startInteraction();
 }
 
 function checkWinLose(guess, tiles) {
-  guessWord=guess;
+  guessWord = guess;
   if (guess === targetWord) {
+    clearInterval(startTimer);
     showAlert("You Win", 2000)
     danceTiles(tiles)
     stopInteraction()
-    createNextGameButton()
+    setTimeout(() => {
+      createNextGameButton()
+    }, (2000))
+
     return
   }
 
@@ -13267,3 +13337,50 @@ document.addEventListener("keydown", (event) => {
     }
   }
 });
+
+
+//Stopwatch
+
+// const btnStart = document.querySelector('.start');
+// const btnStop = document.querySelector('.stop');
+// const btnReset = document.querySelector('.reset');
+
+let hrs = min = sec = ms = 0, startTimer;
+
+// btnStart.addEventListener('click', () => {
+
+//   btnStart.classList.add('start-active');
+//   // btnStop.classList.remove('stop-active');
+
+//   startTimer = setInterval(() => {
+//     ms++;//ms=ms+1;
+//     if (ms == 100) {
+//       sec++;
+//       ms = 0;
+//     }
+//     if (sec == 60) {
+//       min++;
+//       sec = 0;
+//     }
+//     if (min == 60) {
+//       hrs++;
+//       min = 0;
+//     }
+//     updateDisplay();
+//   }, 10);
+// });
+
+// btnStop.addEventListener('click', () => {
+//   clearInterval(startTimer);
+//   btnStart.classList.remove('start-active');
+//   btnStop.classList.add('stop-active');
+
+// });
+
+// btnReset.addEventListener('click', () => {
+//   hrs = min = sec = ms = 0;
+//   clearInterval(startTimer);
+//   updateDisplay();
+//   btnStart.classList.remove('start-active');
+//   // btnStop.classList.remove('stop-active');
+// });
