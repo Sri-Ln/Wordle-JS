@@ -13002,6 +13002,18 @@ var checkActive = false;
 
 startInteraction()
 
+function findAllIndexes(str, charToFind) {
+  const indexes = [];
+  let currentIndex = str.indexOf(charToFind);
+
+  while (currentIndex !== -1) {
+    indexes.push(currentIndex);
+    currentIndex = str.indexOf(charToFind, currentIndex + 1);
+  }
+
+  return indexes;
+}
+
 function getRandomElement(array) {
   if (array.length === 0) {
   }
@@ -13185,14 +13197,19 @@ function flipTile(tile, index, array, guess) {
       // console.log("Target word: ", targetWord);
       // console.log("guess", guess);
       const guessCharCout = (guess.split(letter).length - 1);
-      // console.log("Guess Char count:", guessCharCout);
+      console.log("Guess Char count:", guessCharCout);
       const targetCharCout = (targetWord.split(letter).length - 1);
-      // console.log("targetCharCout:", targetCharCout);
+      console.log("targetCharCout:", targetCharCout);
       if (guessCharCout > 1) {
-        const guessIndex = guess.indexOf(letter);
-        // console.log("guessIndex", guessIndex);
-        const targetIndex = targetWord.indexOf(letter);
-        // console.log("targetIndex", targetIndex);
+        const targetIndexes = findAllIndexes(targetWord, letter);
+        const guessIndexes = findAllIndexes(guess, letter);
+        if (guessIndexes.length > 0) {
+          console.log(`The indexes of '${letter}' in "${targetWord}" are: ${targetIndexes.join(', ')}`);
+          console.log(`The indexes of '${letter}' in "${guess}" are: ${guessIndexes.join(', ')}`);
+        } else {
+          console.log(`'${letter}' not found in "${targetWord}"`);
+        }
+
       }
       tile.classList.remove("flip")
       const letterCountInTarget = countOccurrences(targetWord, letter);
