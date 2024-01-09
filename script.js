@@ -13301,7 +13301,7 @@ function createNextGameButton() {
   const nextButton = document.createElement("button");
   nextButton.setAttribute("data-next", "");
   nextButton.classList.add("key", "large4");
-  nextButton.textContent = "Try another";
+  nextButton.textContent = "New Game";
   const nextButtonContainer = document.querySelector(".next-button");
   nextButtonContainer.appendChild(nextButton);
   startInteraction();
@@ -13323,7 +13323,10 @@ function checkWinLose(guess, tiles) {
 
   const remainingTiles = guessGrid.querySelectorAll(":not([data-letter])")
   if (remainingTiles.length === 0) {
-    showAlert(targetWord.toUpperCase(), null)
+    showAlert(`Nice try, the correct word is ${targetWord?.toUpperCase()}`, 2000);
+    setTimeout(() => {
+      createNextGameButton()
+    }, (2000))
     stopInteraction()
   }
 }
