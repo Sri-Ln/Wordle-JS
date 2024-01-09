@@ -1,8 +1,11 @@
 *, *::after, *::before {
-  box-sizing: border-box;
-  font-family: Arial;
+  box-sizing: border-box;  
+  font-family: 'Poppins', sans-serif;
 }
-
+@font-face {
+  font-family: 'Digital-7';
+  src: url('digital-7.ttf');
+}
 body {
   background: linear-gradient(107deg, rgb(28, 28, 70) 24.17%, rgb(11, 11, 17) 69.19%);
   display: flex;
@@ -232,4 +235,79 @@ body {
 
 .alert.hide {
   opacity: 0;
+}
+
+.box{
+  position: absolute;
+  width: 100px;
+  left:80%;
+  /* background-color: #fff; */
+  background-color: rgb(28, 28, 70) 24.17%;
+  height: 200px;
+  width: 400px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  user-select: none;
+  /* cursor: pointer; */
+  box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
+}
+
+.frame{
+  display: flex;
+  gap: 3px;
+}
+
+h3{
+  font-weight: 500;
+  color:#130f40;
+  text-transform: uppercase;
+  margin-bottom: 25px;
+}
+.hrs,
+.min,
+.sec,
+.ms,
+.colon{
+width: 50px;
+height: 50px;
+font-size: 50px;
+text-align: center;
+line-height: 50px;
+color: #d6d6d6;
+font-family: 'Digital-7';
+}
+.colon{
+width: 10px;
+height: 50px;
+}
+.buttons{
+  margin-top: 25px;
+}
+.buttons button{
+ border: none;
+ padding: 5px 20px;
+ color:white;
+ border-radius: 3px;
+ text-transform: uppercase;
+}
+
+.start{
+  background-color: #6ab04c;
+  cursor: pointer;
+  border-radius: 10px;
+  width: 100px;
+  height:40px
+}
+.stop{background-color: #30336b;}
+.reset{background-color:  #eb4d4b;}
+
+
+.start-active,
+.stop-active{
+  pointer-events: none;
+  /* cursor: pointer; */
+  opacity: 0.5;
 }
