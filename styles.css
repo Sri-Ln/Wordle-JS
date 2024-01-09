@@ -1,10 +1,13 @@
 *, *::after, *::before {
-  box-sizing: border-box;
-  font-family: Arial;
+  box-sizing: border-box;  
+  font-family: 'Poppins', sans-serif;
 }
-
+@font-face {
+  font-family: 'Digital-7';
+  src: url('digital-7.ttf');
+}
 body {
-  background-color: hsl(240, 3%, 7%);
+  background: linear-gradient(107deg, rgb(28, 28, 70) 24.17%, rgb(11, 11, 17) 69.19%);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -18,6 +21,19 @@ body {
   grid-template-columns: repeat(20, minmax(auto, 1.25em));
   grid-auto-rows: 3em;
   gap: .25em;
+  justify-content: center;
+  border:2px solid white;
+  width: max-content;
+  padding: 10px;
+}
+
+.logo-covalent{
+  position: absolute;
+  width: 100px;
+}
+
+.keyboard-grid{
+  display: flex;
   justify-content: center;
 }
 
@@ -44,6 +60,20 @@ body {
 
 .key.large {
   grid-column: span 3;
+}
+
+.next-button{
+  height: 70px;
+  width:100%;
+  display: flex;
+  justify-content: center;
+  margin: 10px 0px;
+}
+
+.key.large4 {
+  height: 70px;
+  width: 200px;
+  background-color: green;
 }
 
 .key > svg {
@@ -79,7 +109,7 @@ body {
   grid-template-columns: repeat(5, 4em);
   grid-template-rows: repeat(6, 4em);
   gap: .25em;
-  margin-bottom: 1em;
+  /* margin-bottom: 1em; */
 }
 
 .tile {
@@ -205,4 +235,79 @@ body {
 
 .alert.hide {
   opacity: 0;
+}
+
+.box{
+  position: absolute;
+  width: 100px;
+  left:80%;
+  /* background-color: #fff; */
+  background-color: rgb(28, 28, 70) 24.17%;
+  height: 200px;
+  width: 400px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  user-select: none;
+  /* cursor: pointer; */
+  box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
+}
+
+.frame{
+  display: flex;
+  gap: 3px;
+}
+
+h3{
+  font-weight: 500;
+  color:#130f40;
+  text-transform: uppercase;
+  margin-bottom: 25px;
+}
+.hrs,
+.min,
+.sec,
+.ms,
+.colon{
+width: 50px;
+height: 50px;
+font-size: 50px;
+text-align: center;
+line-height: 50px;
+color: #d6d6d6;
+font-family: 'Digital-7';
+}
+.colon{
+width: 10px;
+height: 50px;
+}
+.buttons{
+  margin-top: 25px;
+}
+.buttons button{
+ border: none;
+ padding: 5px 20px;
+ color:white;
+ border-radius: 3px;
+ text-transform: uppercase;
+}
+
+.start{
+  background-color: #6ab04c;
+  cursor: pointer;
+  border-radius: 10px;
+  width: 100px;
+  height:40px
+}
+.stop{background-color: #30336b;}
+.reset{background-color:  #eb4d4b;}
+
+
+.start-active,
+.stop-active{
+  pointer-events: none;
+  /* cursor: pointer; */
+  opacity: 0.5;
 }
