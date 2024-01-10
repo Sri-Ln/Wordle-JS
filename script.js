@@ -13083,9 +13083,14 @@ function handleMouseClick(e) {
 
   if (e.target.matches("[data-next]")) {
     //condition to clear out data and play next game
-    update(wholeTime, wholeTime);
-    update(timeLeft, timeLeft);
-    displayTimeLeft(120);
+    let initialTime = 120;
+    let minTime = 30; // Minimum time allowed
+    // Calculate the new time based on the number of wins
+    let newTime = Math.max(minTime, initialTime / Math.pow(2, Math.floor(numberOfGameWin / 2)));
+    // Update the time values and display the updated time
+    update(wholeTime, newTime);
+    update(timeLeft, newTime);
+    displayTimeLeft(newTime);
     clearTileAttributesAndValues()
     targetWord = getRandomElement(targetWords);
     const nextButtonToRemove = document.querySelector("[data-next]");
@@ -13116,7 +13121,15 @@ function pauseTimer(event) {
   console.log("Started: ", isStarted);
   if (isStarted === false) {
     console.log("IS started")
-    timer(wholeTime);
+    let initialTime = 120;
+    let minTime = 30; // Minimum time allowed
+    // Calculate the new time based on the number of wins
+    let newTime = Math.max(minTime, initialTime / Math.pow(2, Math.floor(numberOfGameWin / 2)));
+    // Update the time values and display the updated time
+    update(wholeTime, newTime);
+    update(timeLeft, newTime);
+    displayTimeLeft(newTime);
+    timer(newTime);
     isStarted = true;
     pauseBtn.classList.remove('play');
     pauseBtn.classList.add('pause');
@@ -13140,7 +13153,7 @@ function pauseTimer(event) {
   }
 }
 function handleKeyPress(e) {
-
+  console.log("handle key press:", e.key)
   if (e.key === "Enter") {
     submitGuess();
     return;
@@ -13354,8 +13367,6 @@ function checkWinLose(guess, tiles) {
     displayNumberOfWin.textContent = numberOfGameWin;
     danceTiles(tiles)
     stopInteraction()
-    //condition to stop the timer
-    // isPaused = false
     pauseBtn.classList.remove('pause');
     pauseBtn.classList.add('play');
     clearInterval(intervalTimer);
@@ -13417,8 +13428,6 @@ function danceTiles(tiles) {
 //   }
 // });
 
-let hrs = min = sec = ms = 0, startTimer;
-
 update(wholeTime, wholeTime); //refreshes progress bar
 displayTimeLeft(wholeTime);
 for (var i = 0; i < setterBtns.length; i++) {
@@ -13443,6 +13452,8 @@ for (var i = 0; i < setterBtns.length; i++) {
 }
 function timer(seconds) { //counts time, takes seconds
   let remainTime = Date.now() + (seconds * 1000);
+
+  console.log("remain time: ", seconds);
   displayTimeLeft(seconds);
 
   intervalTimer = setInterval(function () {
