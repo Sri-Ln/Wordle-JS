@@ -319,6 +319,7 @@ const dictionary = [
   "amies",
   "amiga",
   "amigo",
+  "angry",
   "amine",
   "amino",
   "amins",
