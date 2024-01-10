@@ -1,28 +1,5 @@
 const targetWords = [
-  "cloud",
-  "batch",
-  "azure",
-  "slack",
-  "react",
-  "serve",
-  "mongo",
-  "slurm",
-  "stack",
-  "route",
-  "qubit",
-  "scope",
-  "array",
-  "scale",
-  "flask",
-  "numpy",
-  "scrum",
-  "agile",
-  "nodes",
-  "state",
-  "hooks",
-  "redux",
-  "fetch",
-  "conda"
+  "cloud"
 ]
 
 const dictionary = [
@@ -13047,7 +13024,7 @@ function update(value, timePercent) {
 };
 //circle ends
 const displayOutput = document.querySelector('.display-remain-time')
-const pauseBtn = document.getElementById('pause');
+// const pauseBtn = document.getElementById('pause');
 const setterBtns = document.querySelectorAll('button[data-setter]');
 let intervalTimer;
 let wholeTime = 2 * 60; // manage this to set the whole time 
@@ -13103,6 +13080,32 @@ function changeWholeTime(seconds) {
   }
 }
 
+function newGame() {
+  //condition to clear out data and play next game
+  // let initialTime = 120;
+  // let minTime = 30; // Minimum time allowed
+  let newTime = 120;
+  // Calculate the new time based on the number of wins
+  if (numberOfGameWin > 9) {
+    newTime = 10
+  } else if (numberOfGameWin > 5) {
+    newTime = 30
+  } else if (numberOfGameWin > 1) {
+    newTime = 60
+  }
+  // let newTime = Math.max(minTime, initialTime / Math.pow(2, Math.floor(numberOfGameWin / 2)));
+  // Update the time values and display the updated time
+  update(wholeTime, newTime);
+  update(timeLeft, newTime);
+  displayTimeLeft(newTime);
+  clearTileAttributesAndValues()
+  targetWord = getRandomElement(targetWords);
+  const nextButtonToRemove = document.querySelector("[data-next]");
+  if (nextButtonToRemove) {
+    nextButtonToRemove.remove();
+  }
+  return
+}
 function handleMouseClick(e) {
   if (e.target.matches("[data-key]")) {
     pressKey(e.target.dataset.key)
@@ -13116,29 +13119,7 @@ function handleMouseClick(e) {
 
   if (e.target.matches("[data-next]")) {
     //condition to clear out data and play next game
-    // let initialTime = 120;
-    // let minTime = 30; // Minimum time allowed
-    let newTime = 120;
-    // Calculate the new time based on the number of wins
-    if (numberOfGameWin > 9) {
-      newTime = 10
-    } else if (numberOfGameWin > 5) {
-      newTime = 30
-    } else if (numberOfGameWin > 1) {
-      newTime = 60
-    }
-    // let newTime = Math.max(minTime, initialTime / Math.pow(2, Math.floor(numberOfGameWin / 2)));
-    // Update the time values and display the updated time
-    update(wholeTime, newTime);
-    update(timeLeft, newTime);
-    displayTimeLeft(newTime);
-    clearTileAttributesAndValues()
-    targetWord = getRandomElement(targetWords);
-    const nextButtonToRemove = document.querySelector("[data-next]");
-    if (nextButtonToRemove) {
-      nextButtonToRemove.remove();
-    }
-    return
+    newGame();
   }
 
   if (e.target.matches("[data-delete]")) {
@@ -13180,8 +13161,8 @@ function pauseTimer(event) {
     displayTimeLeft(newTime);
     timer(newTime);
     isStarted = true;
-    pauseBtn.classList.remove('play');
-    pauseBtn.classList.add('pause');
+    // pauseBtn.classList.remove('play');
+    // pauseBtn.classList.add('pause');
 
     setterBtns.forEach(function (btn) {
       btn.disabled = true;
@@ -13189,20 +13170,20 @@ function pauseTimer(event) {
     });
   } else if (isPaused) {
     console.log("IS paused")
-    pauseBtn.classList.remove('play');
-    pauseBtn.classList.add('pause');
+    // pauseBtn.classList.remove('play');
+    // pauseBtn.classList.add('pause');
     timer(timeLeft);
     isPaused = isPaused ? false : true
   } else {
     console.log("Else")
-    pauseBtn.classList.remove('pause');
-    pauseBtn.classList.add('play');
+    // pauseBtn.classList.remove('pause');
+    // pauseBtn.classList.add('play');
     clearInterval(intervalTimer);
     isPaused = isPaused ? false : true;
   }
 }
 function handleKeyPress(e) {
-  console.log("handle key press:", e.key)
+  // console.log("handle key press:", e.key)
   if (e.key === "Enter" && !document.getElementById("nextButton")) {
     submitGuess();
     return;
@@ -13418,8 +13399,8 @@ function checkWinLose(guess, tiles) {
     displayNumberOfWin.textContent = numberOfGameWin;
     danceTiles(tiles)
     stopInteraction()
-    pauseBtn.classList.remove('pause');
-    pauseBtn.classList.add('play');
+    // pauseBtn.classList.remove('pause');
+    // pauseBtn.classList.add('play');
     clearInterval(intervalTimer);
     isPaused = isPaused ? false : true;
     timerStarted = false;
@@ -13434,19 +13415,23 @@ function checkWinLose(guess, tiles) {
   const remainingTiles = guessGrid.querySelectorAll(":not([data-letter])")
   if (remainingTiles.length === 0) {
     showAlert(`Nice try, the correct word is ${targetWord?.toUpperCase()}`, 2000);
-    pauseTimer();
-    numberOfGameWin = 0;
-    timerStarted = false;
-    displayNumberOfWin.textContent = numberOfGameWin;
+    // isPaused = false;
+    // pauseTimerNew();
+    // numberOfGameWin = 0;
+    // timerStarted = false;
+    // displayNumberOfWin.textContent = numberOfGameWin;
+    // setTimeout(() => {
+    //   // update(wholeTime, wholeTime);
+    //   // update(timeLeft, timeLeft);
+    //   // displayTimeLeft(120);
+    //   isStarted = false;
+    //   clearTileAttributesAndValues();
+    //   createNextGameButton()
+    // }, (2000))
+    // stopInteraction()
     setTimeout(() => {
-      // update(wholeTime, wholeTime);
-      // update(timeLeft, timeLeft);
-      // displayTimeLeft(120);
-      isStarted = false;
-      clearTileAttributesAndValues();
-      createNextGameButton()
-    }, (2000))
-    stopInteraction()
+      window.location.reload();
+    }, 3000);
   }
 }
 
@@ -13465,22 +13450,15 @@ function danceTiles(tiles) {
   })
 }
 
-// document.addEventListener("keydown", (event) => {
-//   // Check if the pressed key is Enter
-//   if (event.key === "Enter") {
-//     // Check if the user's guess is correct
-//     if (guessWord === targetWord && guessWord != '') {
-//       // Execute the function only when Enter key is pressed and guess is correct
-//       clearTileAttributesAndValues()
-//       const nextButtonToRemove = document.querySelector("[data-next]");
-//       if (nextButtonToRemove) {
-//         nextButtonToRemove.remove();
-//       }
-//       guessWord = ''
-//       targetWord = getRandomElement(targetWords);
-//     }
-//   }
-// });
+document.addEventListener("keydown", (event) => {
+  // Check if the pressed key is Enter
+  if (event.key === "Enter") {
+    // Check if the user's guess is correct
+    if (document.getElementById("nextButton")) {
+      newGame();
+    }
+  }
+});
 
 update(wholeTime, wholeTime); //refreshes progress bar
 displayTimeLeft(wholeTime);
@@ -13520,11 +13498,11 @@ function timer(seconds) { //counts time, takes seconds
         btn.style.opacity = 1;
       });
       displayTimeLeft(wholeTime);
-      pauseBtn.classList.remove('pause');
-      pauseBtn.classList.add('play');
+      // pauseBtn.classList.remove('pause');
+      // pauseBtn.classList.add('play');
       return;
     }
     displayTimeLeft(timeLeft);
   }, 1000);
 }
-pauseBtn.addEventListener('click', pauseTimer);
+// pauseBtn.addEventListener('click', pauseTimer);
