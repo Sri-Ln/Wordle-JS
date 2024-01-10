@@ -12999,7 +12999,7 @@ const keyboard = document.querySelector("[data-keyboard]")
 const alertContainer = document.querySelector("[data-alert-container]")
 const guessGrid = document.querySelector("[data-guess-grid]")
 var checkActive = false;
-
+const displayNumberOfWin = document.querySelector('.winCount')
 
 //circle start
 let progressBar = document.querySelector('.e-c-progress');
@@ -13021,6 +13021,8 @@ let wholeTime = 2 * 60; // manage this to set the whole time
 let timeLeft = 2 * 60;
 let isPaused = false;
 let isStarted = false;
+
+let numberOfGameWin = 0;
 
 startInteraction()
 
@@ -13084,7 +13086,6 @@ function handleMouseClick(e) {
     update(wholeTime, wholeTime);
     update(timeLeft, timeLeft);
     displayTimeLeft(120);
-    timeLeft = wholeTime;
     clearTileAttributesAndValues()
     targetWord = getRandomElement(targetWords);
     const nextButtonToRemove = document.querySelector("[data-next]");
@@ -13346,6 +13347,8 @@ function checkWinLose(guess, tiles) {
   if (guess === targetWord) {
     clearInterval(startTimer);
     showAlert("You Win", 2000)
+    numberOfGameWin += 1;
+    displayNumberOfWin.textContent = numberOfGameWin;
     danceTiles(tiles)
     stopInteraction()
     //condition to stop the timer
@@ -13360,7 +13363,12 @@ function checkWinLose(guess, tiles) {
   const remainingTiles = guessGrid.querySelectorAll(":not([data-letter])")
   if (remainingTiles.length === 0) {
     showAlert(`Nice try, the correct word is ${targetWord?.toUpperCase()}`, 2000);
+    pauseTimer();
     setTimeout(() => {
+      update(wholeTime, wholeTime);
+      update(timeLeft, timeLeft);
+      displayTimeLeft(120);
+      clearTileAttributesAndValues();
       createNextGameButton()
     }, (2000))
     stopInteraction()

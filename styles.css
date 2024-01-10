@@ -349,6 +349,26 @@ button[data-setter]:hover { opacity: 0.5; }
   font-size: 65px;
   color: #F7958E;
 }
+.winNumber{
+  position: absolute;
+  display: flex;
+  justify-content: space-around;
+  top:350px;
+  right:150px;
+  width: 250px;
+}
+.numberofWin{
+  font-family: 'Roboto';
+  font-weight: 100;
+  font-size: 25px;
+  color: #d6d6d6;
+}
+.winCount{
+  color:#D6d6d6;
+  font-family: 'Roboto';
+  font-weight: 100;
+  font-size: 25px;
+}
 .circle{
   position: absolute;
   left: 80%;
