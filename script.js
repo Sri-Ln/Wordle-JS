@@ -2,10 +2,27 @@ const targetWords = [
   "cloud",
   "batch",
   "azure",
+  "slack",
   "react",
   "serve",
   "mongo",
-  "slurm"
+  "slurm",
+  "stack",
+  "route",
+  "qubit",
+  "scope",
+  "array",
+  "scale",
+  "flask",
+  "numpy",
+  "scrum",
+  "agile",
+  "nodes",
+  "state",
+  "hooks",
+  "redux",
+  "fetch",
+  "conda"
 ]
 
 const dictionary = [
@@ -107,6 +124,7 @@ const dictionary = [
   "adobo",
   "adown",
   "adoze",
+  "conda",
   "adrad",
   "adred",
   "adsum",
@@ -12988,7 +13006,22 @@ const dictionary = [
   "react",
   "serve",
   "mongo",
-  "slurm"
+  "slurm",
+  "stack",
+  "route",
+  "qubit",
+  "scope",
+  "array",
+  "scale",
+  "flask",
+  "numpy",
+  "scrum",
+  "agile",
+  "nodes",
+  "state",
+  "hooks",
+  "redux",
+  "fetch"
 ]
 
 
