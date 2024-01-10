@@ -13040,19 +13040,6 @@ function countOccurrences(str, letter) {
 }
 
 
-function updateDisplay() {
-  //Formated Display
-  // phrs = hrs < 10 ? '0' + hrs : hrs;
-  pmin = min < 10 ? '0' + min : min;
-  psec = sec < 10 ? '0' + sec : sec;
-  pms = ms < 10 ? '0' + ms : ms;
-  //Output
-  // document.querySelector('.hrs').innerText = phrs;
-  document.querySelector('.min').innerText = pmin;
-  document.querySelector('.sec').innerText = psec;
-  document.querySelector('.ms').innerText = pms;
-}
-
 function handleMouseClick(e) {
   if (e.target.matches("[data-key]")) {
     pressKey(e.target.dataset.key)
@@ -13068,7 +13055,6 @@ function handleMouseClick(e) {
     //condition to clear out data and play next game
     hrs = min = sec = ms = 0;
     clearInterval(startTimer);
-    updateDisplay();
     // btnStart.classList.remove('start-active');
     clearTileAttributesAndValues()
     targetWord = getRandomElement(targetWords);
@@ -13086,6 +13072,31 @@ function handleMouseClick(e) {
 }
 
 let timerStarted = false;
+
+
+function pauseTimer(event) {
+  if (isStarted === false) {
+    timer(wholeTime);
+    isStarted = true;
+    pauseBtn.classList.remove('play');
+    pauseBtn.classList.add('pause');
+
+    setterBtns.forEach(function (btn) {
+      btn.disabled = true;
+      btn.style.opacity = 0.5;
+    });
+  } else if (isPaused) {
+    pauseBtn.classList.remove('play');
+    pauseBtn.classList.add('pause');
+    timer(timeLeft);
+    isPaused = isPaused ? false : true
+  } else {
+    pauseBtn.classList.remove('pause');
+    pauseBtn.classList.add('play');
+    clearInterval(intervalTimer);
+    isPaused = isPaused ? false : true;
+  }
+}
 
 function handleKeyPress(e) {
 
@@ -13105,22 +13116,8 @@ function handleKeyPress(e) {
 
     // Start the timer only if it hasn't been started yet
     if (!timerStarted) {
-      startTimer = setInterval(() => {
-        ms++;
-        if (ms == 100) {
-          sec++;
-          ms = 0;
-        }
-        if (sec == 60) {
-          min++;
-          sec = 0;
-        }
-        if (min == 60) {
-          hrs++;
-          min = 0;
-        }
-        updateDisplay();
-      }, 10);
+      //condition to start the timer
+      pauseTimer()
       timerStarted = true;
     }
 
@@ -13314,6 +13311,8 @@ function checkWinLose(guess, tiles) {
     showAlert("You Win", 2000)
     danceTiles(tiles)
     stopInteraction()
+    //condition to stop the timer
+    pauseTimer()
     setTimeout(() => {
       createNextGameButton()
     }, (2000))
@@ -13377,7 +13376,7 @@ const pauseBtn = document.getElementById('pause');
 const setterBtns = document.querySelectorAll('button[data-setter]');
 let intervalTimer;
 let timeLeft;
-let wholeTime = 0.5 * 60; // manage this to set the whole time 
+let wholeTime = 2 * 60; // manage this to set the whole time 
 let isPaused = false;
 let isStarted = false;
 
@@ -13429,29 +13428,6 @@ function timer(seconds) { //counts time, takes seconds
     }
     displayTimeLeft(timeLeft);
   }, 1000);
-}
-function pauseTimer(event) {
-  if (isStarted === false) {
-    timer(wholeTime);
-    isStarted = true;
-    this.classList.remove('play');
-    this.classList.add('pause');
-
-    setterBtns.forEach(function (btn) {
-      btn.disabled = true;
-      btn.style.opacity = 0.5;
-    });
-  } else if (isPaused) {
-    this.classList.remove('play');
-    this.classList.add('pause');
-    timer(timeLeft);
-    isPaused = isPaused ? false : true
-  } else {
-    this.classList.remove('pause');
-    this.classList.add('play');
-    clearInterval(intervalTimer);
-    isPaused = isPaused ? false : true;
-  }
 }
 function displayTimeLeft(timeLeft) { //displays time on the input
   let minutes = Math.floor(timeLeft / 60);
