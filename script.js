@@ -13203,7 +13203,7 @@ function pauseTimer(event) {
 }
 function handleKeyPress(e) {
   console.log("handle key press:", e.key)
-  if (e.key === "Enter") {
+  if (e.key === "Enter" && !document.getElementById("nextButton")) {
     submitGuess();
     return;
   }
@@ -13213,10 +13213,11 @@ function handleKeyPress(e) {
     return;
   }
 
-  if (e.key.match(/^[a-z]$/)) {
+  if (e.key.match(/^[a-z]$/) && !document.getElementById("nextButton")) {
+    // console.log("ACheck")
     checkActive = true;
     pressKey(e.key);
-
+    // console.log("Timer started: ", timerStarted);
     // Start the timer only if it hasn't been started yet
     if (!timerStarted) {
       //condition to start the timer
@@ -13400,6 +13401,7 @@ function shakeTiles(tiles) {
 function createNextGameButton() {
   const nextButton = document.createElement("button");
   nextButton.setAttribute("data-next", "");
+  nextButton.setAttribute("id", "nextButton");
   nextButton.classList.add("key", "large4");
   nextButton.textContent = "New Game";
   const nextButtonContainer = document.querySelector(".next-button");
@@ -13433,10 +13435,13 @@ function checkWinLose(guess, tiles) {
   if (remainingTiles.length === 0) {
     showAlert(`Nice try, the correct word is ${targetWord?.toUpperCase()}`, 2000);
     pauseTimer();
+    numberOfGameWin = 0;
+    timerStarted = false;
+    displayNumberOfWin.textContent = numberOfGameWin;
     setTimeout(() => {
-      update(wholeTime, wholeTime);
-      update(timeLeft, timeLeft);
-      displayTimeLeft(120);
+      // update(wholeTime, wholeTime);
+      // update(timeLeft, timeLeft);
+      // displayTimeLeft(120);
       isStarted = false;
       clearTileAttributesAndValues();
       createNextGameButton()
@@ -13502,7 +13507,7 @@ for (var i = 0; i < setterBtns.length; i++) {
 function timer(seconds) { //counts time, takes seconds
   let remainTime = Date.now() + (seconds * 1000);
 
-  console.log("remain time: ", seconds);
+  // console.log("remain time: ", seconds);
   displayTimeLeft(seconds);
 
   intervalTimer = setInterval(function () {
