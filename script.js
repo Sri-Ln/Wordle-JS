@@ -13000,6 +13000,33 @@ const alertContainer = document.querySelector("[data-alert-container]")
 const guessGrid = document.querySelector("[data-guess-grid]")
 var checkActive = false;
 
+
+//circle start
+let progressBar = document.querySelector('.e-c-progress');
+let indicator = document.getElementById('e-indicator');
+let pointer = document.getElementById('e-pointer');
+let length = Math.PI * 2 * 100;
+progressBar.style.strokeDasharray = length;
+function update(value, timePercent) {
+  var offset = - length - length * value / (timePercent);
+  progressBar.style.strokeDashoffset = offset;
+  pointer.style.transform = `rotate(${360 * value / (timePercent)}deg)`;
+};
+//circle ends
+const displayOutput = document.querySelector('.display-remain-time')
+const pauseBtn = document.getElementById('pause');
+const setterBtns = document.querySelectorAll('button[data-setter]');
+let intervalTimer;
+let wholeTime = 2 * 60; // manage this to set the whole time 
+let timeLeft = wholeTime;
+let isPaused = false;
+let isStarted = false;
+
+
+console.log("interval timer; ", intervalTimer);
+console.log("whole time: ", wholeTime);
+console.log("timeleft", timeLeft);
+
 startInteraction()
 
 function findAllIndexes(str, charToFind) {
@@ -13053,8 +13080,9 @@ function handleMouseClick(e) {
 
   if (e.target.matches("[data-next]")) {
     //condition to clear out data and play next game
-    hrs = min = sec = ms = 0;
-    clearInterval(startTimer);
+    let newLength = Math.PI * 2 * 100;
+    progressBar.style.strokeDasharray = newLength;
+    // pauseTimer()
     // btnStart.classList.remove('start-active');
     clearTileAttributesAndValues()
     targetWord = getRandomElement(targetWords);
@@ -13075,7 +13103,10 @@ let timerStarted = false;
 
 
 function pauseTimer(event) {
+  console.log("is started: ", isStarted);
+  console.log("Is paused: ", isPaused);
   if (isStarted === false) {
+
     timer(wholeTime);
     isStarted = true;
     pauseBtn.classList.remove('play');
@@ -13088,6 +13119,7 @@ function pauseTimer(event) {
   } else if (isPaused) {
     pauseBtn.classList.remove('play');
     pauseBtn.classList.add('pause');
+    console.log("Timeleft1:", timeLeft);
     timer(timeLeft);
     isPaused = isPaused ? false : true
   } else {
@@ -13097,7 +13129,6 @@ function pauseTimer(event) {
     isPaused = isPaused ? false : true;
   }
 }
-
 function handleKeyPress(e) {
 
   if (e.key === "Enter") {
@@ -13194,17 +13225,17 @@ function flipTile(tile, index, array, guess) {
       // console.log("Target word: ", targetWord);
       // console.log("guess", guess);
       const guessCharCout = (guess.split(letter).length - 1);
-      console.log("Guess Char count:", guessCharCout);
+      // console.log("Guess Char count:", guessCharCout);
       const targetCharCout = (targetWord.split(letter).length - 1);
-      console.log("targetCharCout:", targetCharCout);
+      // console.log("targetCharCout:", targetCharCout);
       if (guessCharCout > 1) {
         const targetIndexes = findAllIndexes(targetWord, letter);
         const guessIndexes = findAllIndexes(guess, letter);
         if (guessIndexes.length > 0) {
-          console.log(`The indexes of '${letter}' in "${targetWord}" are: ${targetIndexes.join(', ')}`);
-          console.log(`The indexes of '${letter}' in "${guess}" are: ${guessIndexes.join(', ')}`);
+          // console.log(`The indexes of '${letter}' in "${targetWord}" are: ${targetIndexes.join(', ')}`);
+          // console.log(`The indexes of '${letter}' in "${guess}" are: ${guessIndexes.join(', ')}`);
         } else {
-          console.log(`'${letter}' not found in "${targetWord}"`);
+          // console.log(`'${letter}' not found in "${targetWord}"`);
         }
 
       }
@@ -13358,27 +13389,6 @@ document.addEventListener("keydown", (event) => {
 });
 
 let hrs = min = sec = ms = 0, startTimer;
-
-//circle start
-let progressBar = document.querySelector('.e-c-progress');
-let indicator = document.getElementById('e-indicator');
-let pointer = document.getElementById('e-pointer');
-let length = Math.PI * 2 * 100;
-progressBar.style.strokeDasharray = length;
-function update(value, timePercent) {
-  var offset = - length - length * value / (timePercent);
-  progressBar.style.strokeDashoffset = offset;
-  pointer.style.transform = `rotate(${360 * value / (timePercent)}deg)`;
-};
-//circle ends
-const displayOutput = document.querySelector('.display-remain-time')
-const pauseBtn = document.getElementById('pause');
-const setterBtns = document.querySelectorAll('button[data-setter]');
-let intervalTimer;
-let timeLeft;
-let wholeTime = 2 * 60; // manage this to set the whole time 
-let isPaused = false;
-let isStarted = false;
 
 update(wholeTime, wholeTime); //refreshes progress bar
 displayTimeLeft(wholeTime);
