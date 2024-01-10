@@ -1,5 +1,28 @@
 const targetWords = [
-  "cloud"
+  "cloud",
+  "batch",
+  "azure",
+  "slack",
+  "react",
+  "serve",
+  "mongo",
+  "slurm",
+  "stack",
+  "route",
+  "qubit",
+  "scope",
+  "array",
+  "scale",
+  "flask",
+  "numpy",
+  "scrum",
+  "agile",
+  "nodes",
+  "state",
+  "hooks",
+  "redux",
+  "fetch",
+  "conda"
 ]
 
 const dictionary = [
