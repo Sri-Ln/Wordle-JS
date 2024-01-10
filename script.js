@@ -13415,8 +13415,8 @@ function checkWinLose(guess, tiles) {
   const remainingTiles = guessGrid.querySelectorAll(":not([data-letter])")
   if (remainingTiles.length === 0) {
     showAlert(`Nice try, the correct word is ${targetWord?.toUpperCase()}`, 2000);
-    // isPaused = false;
-    // pauseTimerNew();
+    isPaused = false;
+    pauseTimer();
     // numberOfGameWin = 0;
     // timerStarted = false;
     // displayNumberOfWin.textContent = numberOfGameWin;
@@ -13490,18 +13490,26 @@ function timer(seconds) { //counts time, takes seconds
 
   intervalTimer = setInterval(function () {
     timeLeft = Math.round((remainTime - Date.now()) / 1000);
-    if (timeLeft < 0) {
-      clearInterval(intervalTimer);
-      isStarted = false;
-      setterBtns.forEach(function (btn) {
-        btn.disabled = false;
-        btn.style.opacity = 1;
-      });
-      displayTimeLeft(wholeTime);
-      // pauseBtn.classList.remove('pause');
-      // pauseBtn.classList.add('play');
-      return;
+    if (timeLeft == 0) {
+      isPaused = false;
+      pauseTimer();
+      showAlert(`Nice try, the correct word is ${targetWord?.toUpperCase()}`, 2000);
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
     }
+    //   clearInterval(intervalTimer);
+    //   isStarted = false;
+    //   setterBtns.forEach(function (btn) {
+    //     btn.disabled = false;
+    //     btn.style.opacity = 1;
+    //   });
+    //   displayTimeLeft(wholeTime);
+    //   // pauseBtn.classList.remove('pause');
+    //   // pauseBtn.classList.add('play');
+    //   return;
+
+    // }
     displayTimeLeft(timeLeft);
   }, 1000);
 }
