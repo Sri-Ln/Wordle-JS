@@ -13008,6 +13008,7 @@ let pointer = document.getElementById('e-pointer');
 let length = Math.PI * 2 * 100;
 progressBar.style.strokeDasharray = length;
 function update(value, timePercent) {
+  console.log("Update called: ", value, timePercent);
   var offset = - length - length * value / (timePercent);
   progressBar.style.strokeDashoffset = offset;
   pointer.style.transform = `rotate(${360 * value / (timePercent)}deg)`;
@@ -13018,7 +13019,7 @@ const pauseBtn = document.getElementById('pause');
 const setterBtns = document.querySelectorAll('button[data-setter]');
 let intervalTimer;
 let wholeTime = 2 * 60; // manage this to set the whole time 
-let timeLeft = wholeTime;
+let timeLeft = 2 * 60;
 let isPaused = false;
 let isStarted = false;
 
@@ -13067,6 +13068,13 @@ function countOccurrences(str, letter) {
 }
 
 
+function changeWholeTime(seconds) {
+  if ((wholeTime + seconds) > 0) {
+    wholeTime += seconds;
+    update(wholeTime, wholeTime);
+  }
+}
+
 function handleMouseClick(e) {
   if (e.target.matches("[data-key]")) {
     pressKey(e.target.dataset.key)
@@ -13080,10 +13088,12 @@ function handleMouseClick(e) {
 
   if (e.target.matches("[data-next]")) {
     //condition to clear out data and play next game
-    let newLength = Math.PI * 2 * 100;
-    progressBar.style.strokeDasharray = newLength;
-    // pauseTimer()
-    // btnStart.classList.remove('start-active');
+    update(wholeTime, wholeTime);
+    update(timeLeft, timeLeft);
+    displayTimeLeft(120);
+    timeLeft = wholeTime;
+    console.log("Whole time: ", wholeTime);
+    console.log("timeLeft: ", timeLeft);
     clearTileAttributesAndValues()
     targetWord = getRandomElement(targetWords);
     const nextButtonToRemove = document.querySelector("[data-next]");
@@ -13101,6 +13111,16 @@ function handleMouseClick(e) {
 
 let timerStarted = false;
 
+
+function displayTimeLeft(timeLeft) { //displays time on the input
+  console.log("Dispay time called", timeLeft);
+  let minutes = Math.floor(timeLeft / 60);
+  let seconds = timeLeft % 60;
+  let displayString = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  displayOutput.textContent = displayString;
+  console.log("Dispaly string: ", displayString);
+  update(timeLeft, wholeTime);
+}
 
 function pauseTimer(event) {
   console.log("is started: ", isStarted);
@@ -13392,12 +13412,6 @@ let hrs = min = sec = ms = 0, startTimer;
 
 update(wholeTime, wholeTime); //refreshes progress bar
 displayTimeLeft(wholeTime);
-function changeWholeTime(seconds) {
-  if ((wholeTime + seconds) > 0) {
-    wholeTime += seconds;
-    update(wholeTime, wholeTime);
-  }
-}
 for (var i = 0; i < setterBtns.length; i++) {
   setterBtns[i].addEventListener("click", function (event) {
     var param = this.dataset.setter;
@@ -13438,12 +13452,5 @@ function timer(seconds) { //counts time, takes seconds
     }
     displayTimeLeft(timeLeft);
   }, 1000);
-}
-function displayTimeLeft(timeLeft) { //displays time on the input
-  let minutes = Math.floor(timeLeft / 60);
-  let seconds = timeLeft % 60;
-  let displayString = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  displayOutput.textContent = displayString;
-  update(timeLeft, wholeTime);
 }
 pauseBtn.addEventListener('click', pauseTimer);
