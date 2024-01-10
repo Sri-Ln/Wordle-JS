@@ -13034,6 +13034,18 @@ const guessGrid = document.querySelector("[data-guess-grid]")
 var checkActive = false;
 const displayNumberOfWin = document.querySelector('.winCount')
 
+function findRepeatingNumbers(array1, array2) {
+  const repeatingNumbers = [];
+
+  for (const number of array1) {
+    if (array2.includes(number) && !repeatingNumbers.includes(number)) {
+      repeatingNumbers.push(number);
+    }
+  }
+
+  return repeatingNumbers;
+}
+
 //circle start
 let progressBar = document.querySelector('.e-c-progress');
 let indicator = document.getElementById('e-indicator');
@@ -13163,9 +13175,9 @@ function displayTimeLeft(timeLeft) { //displays time on the input
 }
 
 function pauseTimer(event) {
-  console.log("Started: ", isStarted);
+  // console.log("Started: ", isStarted);
   if (isStarted === false) {
-    console.log("IS started")
+    // console.log("IS started")
     let initialTime = 120;
     let minTime = 30; // Minimum time allowed
     // Calculate the new time based on the number of wins
@@ -13206,7 +13218,7 @@ function pauseTimer(event) {
   }
 }
 function handleKeyPress(e) {
-  // console.log("handle key press:", e.key)
+  console.log("handle key press:", e.key)
   if (e.key === "Enter" && !document.getElementById("nextButton")) {
     submitGuess();
     return;
@@ -13218,7 +13230,7 @@ function handleKeyPress(e) {
   }
 
   if (e.key.match(/^[a-z]$/) && !document.getElementById("nextButton")) {
-    // console.log("ACheck")
+    console.log("ACheck")
     checkActive = true;
     pressKey(e.key);
     // console.log("Timer started: ", timerStarted);
@@ -13301,13 +13313,21 @@ function flipTile(tile, index, array, guess) {
     () => {
       // console.log("Target word: ", targetWord);
       // console.log("guess", guess);
+      let shouldContinue = true; // Flag to control the flow
       const guessCharCout = (guess.split(letter).length - 1);
       // console.log("Guess Char count:", guessCharCout);
       const targetCharCout = (targetWord.split(letter).length - 1);
       // console.log("targetCharCout:", targetCharCout);
-      if (guessCharCout > 1) {
+      let repeatingNumbers;
+      let tempCharCount = guessCharCout;
+      if (targetCharCout && (guessCharCout > targetCharCout)) {
         const targetIndexes = findAllIndexes(targetWord, letter);
         const guessIndexes = findAllIndexes(guess, letter);
+        // console.log("target indexes: ", targetIndexes);
+        // console.log("GuessIndexes", guessIndexes);
+        repeatingNumbers = findRepeatingNumbers(targetIndexes, guessIndexes);
+        // Print or use the repeatingNumbers as needed
+        // console.log("Repeating Numbers:", repeatingNumbers);
         if (guessIndexes.length > 0) {
           // console.log(`The indexes of '${letter}' in "${targetWord}" are: ${targetIndexes.join(', ')}`);
           // console.log(`The indexes of '${letter}' in "${guess}" are: ${guessIndexes.join(', ')}`);
@@ -13321,14 +13341,37 @@ function flipTile(tile, index, array, guess) {
       const letterCountInGuess = countOccurrences(guess, letter);
       // this condition needs a rework as if there multiple occurances of a letter in a word then the letter is marked as present
       if (targetWord.includes(letter)) {
+        // console.log("target includes letter")
+        let targetCountVal = 1;
+        let guessCountVal = 2;
+        // console.log("Tempcharcount", tempCharCount);
+        if (repeatingNumbers?.length == targetCharCout) {
+          if (repeatingNumbers.includes(index)) {
+            // console.log("hello")
+            tile.dataset.state = "correct"
+            key.classList.add("correct")
+            tempCharCount -= 1
+          } else {
+            tile.dataset.state = "wrong"
+            key.classList.add("wrong")
+            tempCharCount -= 1
+          }
+          shouldContinue = false;
+        }
+        // console.log("")
+        // console.log("Guess Char count:", guessCharCout);
+        // console.log("targetCharCout:", targetCharCout);
         if (targetWord[index] === letter) {
+          // console.log("hello131")
           tile.dataset.state = "correct"
           key.classList.add("correct")
-        } else {
+        } else if (shouldContinue) {
+          // console.log("else1242")
           tile.dataset.state = "wrong-location"
           key.classList.add("wrong-location")
         }
       } else {
+        // console.log("1234else")
         tile.dataset.state = "wrong"
         key.classList.add("wrong")
       }
