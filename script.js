@@ -319,6 +319,7 @@ const dictionary = [
   "amies",
   "amiga",
   "amigo",
+  "angry",
   "amine",
   "amino",
   "amins",
@@ -13523,8 +13524,11 @@ document.addEventListener("keydown", (event) => {
     if (document.getElementById("nextButton")) {
       newGame();
     }
-  }
-});
+    displayTimeLeft(wholeTime);
+  });
+}
+function timer(seconds) { //counts time, takes seconds
+  let remainTime = Date.now() + (seconds * 1000);
 
 update(wholeTime, wholeTime); //refreshes progress bar
 displayTimeLeft(wholeTime);
