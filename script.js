@@ -13113,8 +13113,9 @@ function displayTimeLeft(timeLeft) { //displays time on the input
 }
 
 function pauseTimer(event) {
+  console.log("Started: ", isStarted);
   if (isStarted === false) {
-
+    console.log("IS started")
     timer(wholeTime);
     isStarted = true;
     pauseBtn.classList.remove('play');
@@ -13125,11 +13126,13 @@ function pauseTimer(event) {
       btn.style.opacity = 0.5;
     });
   } else if (isPaused) {
+    console.log("IS paused")
     pauseBtn.classList.remove('play');
     pauseBtn.classList.add('pause');
     timer(timeLeft);
     isPaused = isPaused ? false : true
   } else {
+    console.log("Else")
     pauseBtn.classList.remove('pause');
     pauseBtn.classList.add('play');
     clearInterval(intervalTimer);
@@ -13345,14 +13348,20 @@ function createNextGameButton() {
 function checkWinLose(guess, tiles) {
   guessWord = guess;
   if (guess === targetWord) {
-    clearInterval(startTimer);
+    clearInterval(intervalTimer);
     showAlert("You Win", 2000)
     numberOfGameWin += 1;
     displayNumberOfWin.textContent = numberOfGameWin;
     danceTiles(tiles)
     stopInteraction()
     //condition to stop the timer
-    pauseTimer()
+    // isPaused = false
+    pauseBtn.classList.remove('pause');
+    pauseBtn.classList.add('play');
+    clearInterval(intervalTimer);
+    isPaused = isPaused ? false : true;
+    timerStarted = false;
+    isStarted = false;
     setTimeout(() => {
       createNextGameButton()
     }, (2000))
@@ -13368,6 +13377,7 @@ function checkWinLose(guess, tiles) {
       update(wholeTime, wholeTime);
       update(timeLeft, timeLeft);
       displayTimeLeft(120);
+      isStarted = false;
       clearTileAttributesAndValues();
       createNextGameButton()
     }, (2000))
@@ -13390,17 +13400,22 @@ function danceTiles(tiles) {
   })
 }
 
-document.addEventListener("keydown", (event) => {
-  // Check if the pressed key is Enter
-  if (event.key === "Enter") {
-    // Check if the user's guess is correct
-    if (guessWord === targetWord) {
-      // Execute the function only when Enter key is pressed and guess is correct
-      clearTileAttributesAndValues()
-      targetWord = getRandomElement(targetWords);
-    }
-  }
-});
+// document.addEventListener("keydown", (event) => {
+//   // Check if the pressed key is Enter
+//   if (event.key === "Enter") {
+//     // Check if the user's guess is correct
+//     if (guessWord === targetWord && guessWord != '') {
+//       // Execute the function only when Enter key is pressed and guess is correct
+//       clearTileAttributesAndValues()
+//       const nextButtonToRemove = document.querySelector("[data-next]");
+//       if (nextButtonToRemove) {
+//         nextButtonToRemove.remove();
+//       }
+//       guessWord = ''
+//       targetWord = getRandomElement(targetWords);
+//     }
+//   }
+// });
 
 let hrs = min = sec = ms = 0, startTimer;
 
