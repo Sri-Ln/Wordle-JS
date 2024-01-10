@@ -4,14 +4,16 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/x-icon" href="./logo.svg">
   <link rel="stylesheet" href="styles.css">
   <script src="script.js" defer></script>
   <title>Wordle Clone</title>
 </head>
+
 <body>
   <div class="alert-container" data-alert-container></div>
   <div class="logo-covalent">
-    <img src="./logo.svg" alt="logo-covalent"/>
+    <img src="./logo.svg" alt="logo-covalent" />
   </div>
   <div>
     <div data-guess-grid class="guess-grid">
@@ -46,8 +48,8 @@
       <div class="tile"></div>
       <div class="tile"></div>
     </div>
-    <div class="next-button"></div>    
-  </div> 
+    <div class="next-button"></div>
+  </div>
   <div class="keyboard-grid">
     <div data-keyboard class="keyboard">
       <button class="key" data-key="Q">Q</button>
@@ -72,7 +74,9 @@
       <button class="key" data-key="L">L</button>
       <button data-delete class="key large">
         <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 0 24 24" width="20">
-          <path fill="var(--color-tone-1)" d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H7.07L2.4 12l4.66-7H22v14zm-11.59-2L14 13.41 17.59 17 19 15.59 15.41 12 19 8.41 17.59 7 14 10.59 10.41 7 9 8.41 12.59 12 9 15.59z"></path>
+          <path fill="var(--color-tone-1)"
+            d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H7.07L2.4 12l4.66-7H22v14zm-11.59-2L14 13.41 17.59 17 19 15.59 15.41 12 19 8.41 17.59 7 14 10.59 10.41 7 9 8.41 12.59 12 9 15.59z">
+          </path>
         </svg>
       </button>
       <!-- <div class="space"></div> -->
@@ -86,19 +90,51 @@
       <button data-enter class="key large">Enter</button>
     </div>
   </div>
-  <div class="box">
+  <!-- <div class="box">
     <div class="frame">
       <div class="min">00</div>
       <div class="colon">:</div>
-      <div class="sec">00</div>   
+      <div class="sec">00</div>
       <div class="colon">:</div>
       <div class="ms">00</div>
     </div>
     <div class="buttons">
-      <!-- <button class="start">Start</button> -->
-      <!-- <button class="stop">Stop</button>
-      <button class="reset">Reset</button> -->
+      <button class="start">Start</button>
+      <button class="stop">Stop</button>
+      <button class="reset">Reset</button>
+    </div>
+  </div> -->
+  <div class="circle">
+    <svg width="300" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(110,110)">
+        <circle r="100" class="e-c-base" />
+        <g transform="rotate(-90)">
+          <circle r="100" class="e-c-progress" />
+          <g id="e-pointer">
+            <circle cx="100" cy="0" r="8" class="e-c-pointer" />
+          </g>
+        </g>
+      </g>
+    </svg>
+    <div class="controlls">
+      <div class="display-remain-time">00:30</div>
+      <button class="play" id="pause"></button>
+    </div>
+    <div class="setters">
+      <div class="minutes-set">
+        <button data-setter="minutes-plus">+</button>
+        <button data-setter="minutes-minus">-</button>
+      </div>
+      <div class="seconds-set">
+        <button data-setter="seconds-plus">+</button>
+        <button data-setter="seconds-minus">-</button>
+      </div>
     </div>
   </div>
+  <div class="winNumber">
+    <div class="numberofWin">Number of game win:</div>
+    <div class="winCount">0</div>
+  </div>
 </body>
+
 </html>

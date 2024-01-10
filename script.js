@@ -2,10 +2,27 @@ const targetWords = [
   "cloud",
   "batch",
   "azure",
+  "slack",
   "react",
   "serve",
   "mongo",
-  "slurm"
+  "slurm",
+  "stack",
+  "route",
+  "qubit",
+  "scope",
+  "array",
+  "scale",
+  "flask",
+  "numpy",
+  "scrum",
+  "agile",
+  "nodes",
+  "state",
+  "hooks",
+  "redux",
+  "fetch",
+  "conda"
 ]
 
 const dictionary = [
@@ -107,6 +124,7 @@ const dictionary = [
   "adobo",
   "adown",
   "adoze",
+  "conda",
   "adrad",
   "adred",
   "adsum",
@@ -301,6 +319,7 @@ const dictionary = [
   "amies",
   "amiga",
   "amigo",
+  "angry",
   "amine",
   "amino",
   "amins",
@@ -12988,7 +13007,22 @@ const dictionary = [
   "react",
   "serve",
   "mongo",
-  "slurm"
+  "slurm",
+  "stack",
+  "route",
+  "qubit",
+  "scope",
+  "array",
+  "scale",
+  "flask",
+  "numpy",
+  "scrum",
+  "agile",
+  "nodes",
+  "state",
+  "hooks",
+  "redux",
+  "fetch"
 ]
 
 
@@ -12999,6 +13033,30 @@ const keyboard = document.querySelector("[data-keyboard]")
 const alertContainer = document.querySelector("[data-alert-container]")
 const guessGrid = document.querySelector("[data-guess-grid]")
 var checkActive = false;
+const displayNumberOfWin = document.querySelector('.winCount')
+
+//circle start
+let progressBar = document.querySelector('.e-c-progress');
+let indicator = document.getElementById('e-indicator');
+let pointer = document.getElementById('e-pointer');
+let length = Math.PI * 2 * 100;
+progressBar.style.strokeDasharray = length;
+function update(value, timePercent) {
+  var offset = - length - length * value / (timePercent);
+  progressBar.style.strokeDashoffset = offset;
+  pointer.style.transform = `rotate(${360 * value / (timePercent)}deg)`;
+};
+//circle ends
+const displayOutput = document.querySelector('.display-remain-time')
+const pauseBtn = document.getElementById('pause');
+const setterBtns = document.querySelectorAll('button[data-setter]');
+let intervalTimer;
+let wholeTime = 2 * 60; // manage this to set the whole time 
+let timeLeft = 2 * 60;
+let isPaused = false;
+let isStarted = false;
+
+let numberOfGameWin = 0;
 
 startInteraction()
 
@@ -13022,7 +13080,6 @@ function getRandomElement(array) {
 }
 
 let targetWord = getRandomElement(targetWords);
-// console.log("TargetWord:", targetWord);
 
 let guessWord;
 function startInteraction() {
@@ -13040,17 +13097,11 @@ function countOccurrences(str, letter) {
 }
 
 
-function updateDisplay() {
-  //Formated Display
-  // phrs = hrs < 10 ? '0' + hrs : hrs;
-  pmin = min < 10 ? '0' + min : min;
-  psec = sec < 10 ? '0' + sec : sec;
-  pms = ms < 10 ? '0' + ms : ms;
-  //Output
-  // document.querySelector('.hrs').innerText = phrs;
-  document.querySelector('.min').innerText = pmin;
-  document.querySelector('.sec').innerText = psec;
-  document.querySelector('.ms').innerText = pms;
+function changeWholeTime(seconds) {
+  if ((wholeTime + seconds) > 0) {
+    wholeTime += seconds;
+    update(wholeTime, wholeTime);
+  }
 }
 
 function handleMouseClick(e) {
@@ -13066,10 +13117,22 @@ function handleMouseClick(e) {
 
   if (e.target.matches("[data-next]")) {
     //condition to clear out data and play next game
-    hrs = min = sec = ms = 0;
-    clearInterval(startTimer);
-    updateDisplay();
-    // btnStart.classList.remove('start-active');
+    // let initialTime = 120;
+    // let minTime = 30; // Minimum time allowed
+    let newTime = 120;
+    // Calculate the new time based on the number of wins
+    if (numberOfGameWin > 9) {
+      newTime = 10
+    } else if (numberOfGameWin > 5) {
+      newTime = 30
+    } else if (numberOfGameWin > 1) {
+      newTime = 60
+    }
+    // let newTime = Math.max(minTime, initialTime / Math.pow(2, Math.floor(numberOfGameWin / 2)));
+    // Update the time values and display the updated time
+    update(wholeTime, newTime);
+    update(timeLeft, newTime);
+    displayTimeLeft(newTime);
     clearTileAttributesAndValues()
     targetWord = getRandomElement(targetWords);
     const nextButtonToRemove = document.querySelector("[data-next]");
@@ -13087,8 +13150,60 @@ function handleMouseClick(e) {
 
 let timerStarted = false;
 
-function handleKeyPress(e) {
 
+function displayTimeLeft(timeLeft) { //displays time on the input
+  let minutes = Math.floor(timeLeft / 60);
+  let seconds = timeLeft % 60;
+  let displayString = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  displayOutput.textContent = displayString;
+  update(timeLeft, wholeTime);
+}
+
+function pauseTimer(event) {
+  console.log("Started: ", isStarted);
+  if (isStarted === false) {
+    console.log("IS started")
+    let initialTime = 120;
+    let minTime = 30; // Minimum time allowed
+    // Calculate the new time based on the number of wins
+    let newTime = 120;
+    // Calculate the new time based on the number of wins
+    if (numberOfGameWin > 9) {
+      newTime = 10
+    } else if (numberOfGameWin > 5) {
+      newTime = 30
+    } else if (numberOfGameWin > 1) {
+      newTime = 60
+    }
+    // Update the time values and display the updated time
+    update(wholeTime, newTime);
+    update(timeLeft, newTime);
+    displayTimeLeft(newTime);
+    timer(newTime);
+    isStarted = true;
+    pauseBtn.classList.remove('play');
+    pauseBtn.classList.add('pause');
+
+    setterBtns.forEach(function (btn) {
+      btn.disabled = true;
+      btn.style.opacity = 0.5;
+    });
+  } else if (isPaused) {
+    console.log("IS paused")
+    pauseBtn.classList.remove('play');
+    pauseBtn.classList.add('pause');
+    timer(timeLeft);
+    isPaused = isPaused ? false : true
+  } else {
+    console.log("Else")
+    pauseBtn.classList.remove('pause');
+    pauseBtn.classList.add('play');
+    clearInterval(intervalTimer);
+    isPaused = isPaused ? false : true;
+  }
+}
+function handleKeyPress(e) {
+  console.log("handle key press:", e.key)
   if (e.key === "Enter") {
     submitGuess();
     return;
@@ -13105,22 +13220,8 @@ function handleKeyPress(e) {
 
     // Start the timer only if it hasn't been started yet
     if (!timerStarted) {
-      startTimer = setInterval(() => {
-        ms++;
-        if (ms == 100) {
-          sec++;
-          ms = 0;
-        }
-        if (sec == 60) {
-          min++;
-          sec = 0;
-        }
-        if (min == 60) {
-          hrs++;
-          min = 0;
-        }
-        updateDisplay();
-      }, 10);
+      //condition to start the timer
+      pauseTimer()
       timerStarted = true;
     }
 
@@ -13197,17 +13298,17 @@ function flipTile(tile, index, array, guess) {
       // console.log("Target word: ", targetWord);
       // console.log("guess", guess);
       const guessCharCout = (guess.split(letter).length - 1);
-      console.log("Guess Char count:", guessCharCout);
+      // console.log("Guess Char count:", guessCharCout);
       const targetCharCout = (targetWord.split(letter).length - 1);
-      console.log("targetCharCout:", targetCharCout);
+      // console.log("targetCharCout:", targetCharCout);
       if (guessCharCout > 1) {
         const targetIndexes = findAllIndexes(targetWord, letter);
         const guessIndexes = findAllIndexes(guess, letter);
         if (guessIndexes.length > 0) {
-          console.log(`The indexes of '${letter}' in "${targetWord}" are: ${targetIndexes.join(', ')}`);
-          console.log(`The indexes of '${letter}' in "${guess}" are: ${guessIndexes.join(', ')}`);
+          // console.log(`The indexes of '${letter}' in "${targetWord}" are: ${targetIndexes.join(', ')}`);
+          // console.log(`The indexes of '${letter}' in "${guess}" are: ${guessIndexes.join(', ')}`);
         } else {
-          console.log(`'${letter}' not found in "${targetWord}"`);
+          // console.log(`'${letter}' not found in "${targetWord}"`);
         }
 
       }
@@ -13310,10 +13411,18 @@ function createNextGameButton() {
 function checkWinLose(guess, tiles) {
   guessWord = guess;
   if (guess === targetWord) {
-    clearInterval(startTimer);
+    clearInterval(intervalTimer);
     showAlert("You Win", 2000)
+    numberOfGameWin += 1;
+    displayNumberOfWin.textContent = numberOfGameWin;
     danceTiles(tiles)
     stopInteraction()
+    pauseBtn.classList.remove('pause');
+    pauseBtn.classList.add('play');
+    clearInterval(intervalTimer);
+    isPaused = isPaused ? false : true;
+    timerStarted = false;
+    isStarted = false;
     setTimeout(() => {
       createNextGameButton()
     }, (2000))
@@ -13324,7 +13433,13 @@ function checkWinLose(guess, tiles) {
   const remainingTiles = guessGrid.querySelectorAll(":not([data-letter])")
   if (remainingTiles.length === 0) {
     showAlert(`Nice try, the correct word is ${targetWord?.toUpperCase()}`, 2000);
+    pauseTimer();
     setTimeout(() => {
+      update(wholeTime, wholeTime);
+      update(timeLeft, timeLeft);
+      displayTimeLeft(120);
+      isStarted = false;
+      clearTileAttributesAndValues();
       createNextGameButton()
     }, (2000))
     stopInteraction()
@@ -13346,61 +13461,66 @@ function danceTiles(tiles) {
   })
 }
 
-document.addEventListener("keydown", (event) => {
-  // Check if the pressed key is Enter
-  if (event.key === "Enter") {
-    // Check if the user's guess is correct
-    if (guessWord === targetWord) {
-      // Execute the function only when Enter key is pressed and guess is correct
-      clearTileAttributesAndValues()
-      targetWord = getRandomElement(targetWords);
+// document.addEventListener("keydown", (event) => {
+//   // Check if the pressed key is Enter
+//   if (event.key === "Enter") {
+//     // Check if the user's guess is correct
+//     if (guessWord === targetWord && guessWord != '') {
+//       // Execute the function only when Enter key is pressed and guess is correct
+//       clearTileAttributesAndValues()
+//       const nextButtonToRemove = document.querySelector("[data-next]");
+//       if (nextButtonToRemove) {
+//         nextButtonToRemove.remove();
+//       }
+//       guessWord = ''
+//       targetWord = getRandomElement(targetWords);
+//     }
+//   }
+// });
+
+update(wholeTime, wholeTime); //refreshes progress bar
+displayTimeLeft(wholeTime);
+for (var i = 0; i < setterBtns.length; i++) {
+  setterBtns[i].addEventListener("click", function (event) {
+    var param = this.dataset.setter;
+    switch (param) {
+      case 'minutes-plus':
+        changeWholeTime(1 * 60);
+        break;
+      case 'minutes-minus':
+        changeWholeTime(-1 * 60);
+        break;
+      case 'seconds-plus':
+        changeWholeTime(1);
+        break;
+      case 'seconds-minus':
+        changeWholeTime(-1);
+        break;
     }
-  }
-});
+    displayTimeLeft(wholeTime);
+  });
+}
+function timer(seconds) { //counts time, takes seconds
+  let remainTime = Date.now() + (seconds * 1000);
 
+  console.log("remain time: ", seconds);
+  displayTimeLeft(seconds);
 
-//Stopwatch
-
-// const btnStart = document.querySelector('.start');
-// const btnStop = document.querySelector('.stop');
-// const btnReset = document.querySelector('.reset');
-
-let hrs = min = sec = ms = 0, startTimer;
-
-// btnStart.addEventListener('click', () => {
-
-//   btnStart.classList.add('start-active');
-//   // btnStop.classList.remove('stop-active');
-
-//   startTimer = setInterval(() => {
-//     ms++;//ms=ms+1;
-//     if (ms == 100) {
-//       sec++;
-//       ms = 0;
-//     }
-//     if (sec == 60) {
-//       min++;
-//       sec = 0;
-//     }
-//     if (min == 60) {
-//       hrs++;
-//       min = 0;
-//     }
-//     updateDisplay();
-//   }, 10);
-// });
-
-// btnStop.addEventListener('click', () => {
-//   clearInterval(startTimer);
-//   btnStart.classList.remove('start-active');
-//   btnStop.classList.add('stop-active');
-
-// });
-
-// btnReset.addEventListener('click', () => {
-//   hrs = min = sec = ms = 0;
-//   clearInterval(startTimer);
-//   updateDisplay();
-//   btnStart.classList.remove('start-active');
-//   // btnStop.classList.remove('stop-active');
-// });
+  intervalTimer = setInterval(function () {
+    timeLeft = Math.round((remainTime - Date.now()) / 1000);
+    if (timeLeft < 0) {
+      clearInterval(intervalTimer);
+      isStarted = false;
+      setterBtns.forEach(function (btn) {
+        btn.disabled = false;
+        btn.style.opacity = 1;
+      });
+      displayTimeLeft(wholeTime);
+      pauseBtn.classList.remove('pause');
+      pauseBtn.classList.add('play');
+      return;
+    }
+    displayTimeLeft(timeLeft);
+  }, 1000);
+}
+pauseBtn.addEventListener('click', pauseTimer);
