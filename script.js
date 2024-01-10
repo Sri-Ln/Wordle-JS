@@ -13008,7 +13008,6 @@ let pointer = document.getElementById('e-pointer');
 let length = Math.PI * 2 * 100;
 progressBar.style.strokeDasharray = length;
 function update(value, timePercent) {
-  console.log("Update called: ", value, timePercent);
   var offset = - length - length * value / (timePercent);
   progressBar.style.strokeDashoffset = offset;
   pointer.style.transform = `rotate(${360 * value / (timePercent)}deg)`;
@@ -13022,11 +13021,6 @@ let wholeTime = 2 * 60; // manage this to set the whole time
 let timeLeft = 2 * 60;
 let isPaused = false;
 let isStarted = false;
-
-
-console.log("interval timer; ", intervalTimer);
-console.log("whole time: ", wholeTime);
-console.log("timeleft", timeLeft);
 
 startInteraction()
 
@@ -13050,7 +13044,6 @@ function getRandomElement(array) {
 }
 
 let targetWord = getRandomElement(targetWords);
-// console.log("TargetWord:", targetWord);
 
 let guessWord;
 function startInteraction() {
@@ -13092,8 +13085,6 @@ function handleMouseClick(e) {
     update(timeLeft, timeLeft);
     displayTimeLeft(120);
     timeLeft = wholeTime;
-    console.log("Whole time: ", wholeTime);
-    console.log("timeLeft: ", timeLeft);
     clearTileAttributesAndValues()
     targetWord = getRandomElement(targetWords);
     const nextButtonToRemove = document.querySelector("[data-next]");
@@ -13113,18 +13104,14 @@ let timerStarted = false;
 
 
 function displayTimeLeft(timeLeft) { //displays time on the input
-  console.log("Dispay time called", timeLeft);
   let minutes = Math.floor(timeLeft / 60);
   let seconds = timeLeft % 60;
   let displayString = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   displayOutput.textContent = displayString;
-  console.log("Dispaly string: ", displayString);
   update(timeLeft, wholeTime);
 }
 
 function pauseTimer(event) {
-  console.log("is started: ", isStarted);
-  console.log("Is paused: ", isPaused);
   if (isStarted === false) {
 
     timer(wholeTime);
@@ -13139,7 +13126,6 @@ function pauseTimer(event) {
   } else if (isPaused) {
     pauseBtn.classList.remove('play');
     pauseBtn.classList.add('pause');
-    console.log("Timeleft1:", timeLeft);
     timer(timeLeft);
     isPaused = isPaused ? false : true
   } else {
