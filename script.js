@@ -319,7 +319,6 @@ const dictionary = [
   "amies",
   "amiga",
   "amigo",
-  "angry",
   "amine",
   "amino",
   "amins",
@@ -13035,6 +13034,18 @@ const guessGrid = document.querySelector("[data-guess-grid]")
 var checkActive = false;
 const displayNumberOfWin = document.querySelector('.winCount')
 
+function findRepeatingNumbers(array1, array2) {
+  const repeatingNumbers = [];
+
+  for (const number of array1) {
+    if (array2.includes(number) && !repeatingNumbers.includes(number)) {
+      repeatingNumbers.push(number);
+    }
+  }
+
+  return repeatingNumbers;
+}
+
 //circle start
 let progressBar = document.querySelector('.e-c-progress');
 let indicator = document.getElementById('e-indicator');
@@ -13048,7 +13059,7 @@ function update(value, timePercent) {
 };
 //circle ends
 const displayOutput = document.querySelector('.display-remain-time')
-const pauseBtn = document.getElementById('pause');
+// const pauseBtn = document.getElementById('pause');
 const setterBtns = document.querySelectorAll('button[data-setter]');
 let intervalTimer;
 let wholeTime = 2 * 60; // manage this to set the whole time 
@@ -13104,6 +13115,32 @@ function changeWholeTime(seconds) {
   }
 }
 
+function newGame() {
+  //condition to clear out data and play next game
+  // let initialTime = 120;
+  // let minTime = 30; // Minimum time allowed
+  let newTime = 120;
+  // Calculate the new time based on the number of wins
+  if (numberOfGameWin > 9) {
+    newTime = 10
+  } else if (numberOfGameWin > 5) {
+    newTime = 30
+  } else if (numberOfGameWin > 1) {
+    newTime = 60
+  }
+  // let newTime = Math.max(minTime, initialTime / Math.pow(2, Math.floor(numberOfGameWin / 2)));
+  // Update the time values and display the updated time
+  update(wholeTime, newTime);
+  update(timeLeft, newTime);
+  displayTimeLeft(newTime);
+  clearTileAttributesAndValues()
+  targetWord = getRandomElement(targetWords);
+  const nextButtonToRemove = document.querySelector("[data-next]");
+  if (nextButtonToRemove) {
+    nextButtonToRemove.remove();
+  }
+  return
+}
 function handleMouseClick(e) {
   if (e.target.matches("[data-key]")) {
     pressKey(e.target.dataset.key)
@@ -13117,29 +13154,7 @@ function handleMouseClick(e) {
 
   if (e.target.matches("[data-next]")) {
     //condition to clear out data and play next game
-    // let initialTime = 120;
-    // let minTime = 30; // Minimum time allowed
-    let newTime = 120;
-    // Calculate the new time based on the number of wins
-    if (numberOfGameWin > 9) {
-      newTime = 10
-    } else if (numberOfGameWin > 5) {
-      newTime = 30
-    } else if (numberOfGameWin > 1) {
-      newTime = 60
-    }
-    // let newTime = Math.max(minTime, initialTime / Math.pow(2, Math.floor(numberOfGameWin / 2)));
-    // Update the time values and display the updated time
-    update(wholeTime, newTime);
-    update(timeLeft, newTime);
-    displayTimeLeft(newTime);
-    clearTileAttributesAndValues()
-    targetWord = getRandomElement(targetWords);
-    const nextButtonToRemove = document.querySelector("[data-next]");
-    if (nextButtonToRemove) {
-      nextButtonToRemove.remove();
-    }
-    return
+    newGame();
   }
 
   if (e.target.matches("[data-delete]")) {
@@ -13160,9 +13175,9 @@ function displayTimeLeft(timeLeft) { //displays time on the input
 }
 
 function pauseTimer(event) {
-  console.log("Started: ", isStarted);
+  // console.log("Started: ", isStarted);
   if (isStarted === false) {
-    console.log("IS started")
+    // console.log("IS started")
     let initialTime = 120;
     let minTime = 30; // Minimum time allowed
     // Calculate the new time based on the number of wins
@@ -13181,8 +13196,8 @@ function pauseTimer(event) {
     displayTimeLeft(newTime);
     timer(newTime);
     isStarted = true;
-    pauseBtn.classList.remove('play');
-    pauseBtn.classList.add('pause');
+    // pauseBtn.classList.remove('play');
+    // pauseBtn.classList.add('pause');
 
     setterBtns.forEach(function (btn) {
       btn.disabled = true;
@@ -13190,21 +13205,21 @@ function pauseTimer(event) {
     });
   } else if (isPaused) {
     console.log("IS paused")
-    pauseBtn.classList.remove('play');
-    pauseBtn.classList.add('pause');
+    // pauseBtn.classList.remove('play');
+    // pauseBtn.classList.add('pause');
     timer(timeLeft);
     isPaused = isPaused ? false : true
   } else {
     console.log("Else")
-    pauseBtn.classList.remove('pause');
-    pauseBtn.classList.add('play');
+    // pauseBtn.classList.remove('pause');
+    // pauseBtn.classList.add('play');
     clearInterval(intervalTimer);
     isPaused = isPaused ? false : true;
   }
 }
 function handleKeyPress(e) {
   console.log("handle key press:", e.key)
-  if (e.key === "Enter") {
+  if (e.key === "Enter" && !document.getElementById("nextButton")) {
     submitGuess();
     return;
   }
@@ -13214,10 +13229,11 @@ function handleKeyPress(e) {
     return;
   }
 
-  if (e.key.match(/^[a-z]$/)) {
+  if (e.key.match(/^[a-z]$/) && !document.getElementById("nextButton")) {
+    console.log("ACheck")
     checkActive = true;
     pressKey(e.key);
-
+    // console.log("Timer started: ", timerStarted);
     // Start the timer only if it hasn't been started yet
     if (!timerStarted) {
       //condition to start the timer
@@ -13297,13 +13313,21 @@ function flipTile(tile, index, array, guess) {
     () => {
       // console.log("Target word: ", targetWord);
       // console.log("guess", guess);
+      let shouldContinue = true; // Flag to control the flow
       const guessCharCout = (guess.split(letter).length - 1);
       // console.log("Guess Char count:", guessCharCout);
       const targetCharCout = (targetWord.split(letter).length - 1);
       // console.log("targetCharCout:", targetCharCout);
-      if (guessCharCout > 1) {
+      let repeatingNumbers;
+      let tempCharCount = guessCharCout;
+      if (targetCharCout && (guessCharCout > targetCharCout)) {
         const targetIndexes = findAllIndexes(targetWord, letter);
         const guessIndexes = findAllIndexes(guess, letter);
+        // console.log("target indexes: ", targetIndexes);
+        // console.log("GuessIndexes", guessIndexes);
+        repeatingNumbers = findRepeatingNumbers(targetIndexes, guessIndexes);
+        // Print or use the repeatingNumbers as needed
+        // console.log("Repeating Numbers:", repeatingNumbers);
         if (guessIndexes.length > 0) {
           // console.log(`The indexes of '${letter}' in "${targetWord}" are: ${targetIndexes.join(', ')}`);
           // console.log(`The indexes of '${letter}' in "${guess}" are: ${guessIndexes.join(', ')}`);
@@ -13317,14 +13341,37 @@ function flipTile(tile, index, array, guess) {
       const letterCountInGuess = countOccurrences(guess, letter);
       // this condition needs a rework as if there multiple occurances of a letter in a word then the letter is marked as present
       if (targetWord.includes(letter)) {
+        // console.log("target includes letter")
+        let targetCountVal = 1;
+        let guessCountVal = 2;
+        // console.log("Tempcharcount", tempCharCount);
+        if (repeatingNumbers?.length == targetCharCout) {
+          if (repeatingNumbers.includes(index)) {
+            // console.log("hello")
+            tile.dataset.state = "correct"
+            key.classList.add("correct")
+            tempCharCount -= 1
+          } else {
+            tile.dataset.state = "wrong"
+            key.classList.add("wrong")
+            tempCharCount -= 1
+          }
+          shouldContinue = false;
+        }
+        // console.log("")
+        // console.log("Guess Char count:", guessCharCout);
+        // console.log("targetCharCout:", targetCharCout);
         if (targetWord[index] === letter) {
+          // console.log("hello131")
           tile.dataset.state = "correct"
           key.classList.add("correct")
-        } else {
+        } else if (shouldContinue) {
+          // console.log("else1242")
           tile.dataset.state = "wrong-location"
           key.classList.add("wrong-location")
         }
       } else {
+        // console.log("1234else")
         tile.dataset.state = "wrong"
         key.classList.add("wrong")
       }
@@ -13401,6 +13448,7 @@ function shakeTiles(tiles) {
 function createNextGameButton() {
   const nextButton = document.createElement("button");
   nextButton.setAttribute("data-next", "");
+  nextButton.setAttribute("id", "nextButton");
   nextButton.classList.add("key", "large4");
   nextButton.textContent = "New Game";
   const nextButtonContainer = document.querySelector(".next-button");
@@ -13417,8 +13465,8 @@ function checkWinLose(guess, tiles) {
     displayNumberOfWin.textContent = numberOfGameWin;
     danceTiles(tiles)
     stopInteraction()
-    pauseBtn.classList.remove('pause');
-    pauseBtn.classList.add('play');
+    // pauseBtn.classList.remove('pause');
+    // pauseBtn.classList.add('play');
     clearInterval(intervalTimer);
     isPaused = isPaused ? false : true;
     timerStarted = false;
@@ -13433,16 +13481,23 @@ function checkWinLose(guess, tiles) {
   const remainingTiles = guessGrid.querySelectorAll(":not([data-letter])")
   if (remainingTiles.length === 0) {
     showAlert(`Nice try, the correct word is ${targetWord?.toUpperCase()}`, 2000);
+    isPaused = false;
     pauseTimer();
+    // numberOfGameWin = 0;
+    // timerStarted = false;
+    // displayNumberOfWin.textContent = numberOfGameWin;
+    // setTimeout(() => {
+    //   // update(wholeTime, wholeTime);
+    //   // update(timeLeft, timeLeft);
+    //   // displayTimeLeft(120);
+    //   isStarted = false;
+    //   clearTileAttributesAndValues();
+    //   createNextGameButton()
+    // }, (2000))
+    // stopInteraction()
     setTimeout(() => {
-      update(wholeTime, wholeTime);
-      update(timeLeft, timeLeft);
-      displayTimeLeft(120);
-      isStarted = false;
-      clearTileAttributesAndValues();
-      createNextGameButton()
-    }, (2000))
-    stopInteraction()
+      window.location.reload();
+    }, 3000);
   }
 }
 
@@ -13461,22 +13516,15 @@ function danceTiles(tiles) {
   })
 }
 
-// document.addEventListener("keydown", (event) => {
-//   // Check if the pressed key is Enter
-//   if (event.key === "Enter") {
-//     // Check if the user's guess is correct
-//     if (guessWord === targetWord && guessWord != '') {
-//       // Execute the function only when Enter key is pressed and guess is correct
-//       clearTileAttributesAndValues()
-//       const nextButtonToRemove = document.querySelector("[data-next]");
-//       if (nextButtonToRemove) {
-//         nextButtonToRemove.remove();
-//       }
-//       guessWord = ''
-//       targetWord = getRandomElement(targetWords);
-//     }
-//   }
-// });
+document.addEventListener("keydown", (event) => {
+  // Check if the pressed key is Enter
+  if (event.key === "Enter") {
+    // Check if the user's guess is correct
+    if (document.getElementById("nextButton")) {
+      newGame();
+    }
+  }
+});
 
 update(wholeTime, wholeTime); //refreshes progress bar
 displayTimeLeft(wholeTime);
@@ -13503,24 +13551,32 @@ for (var i = 0; i < setterBtns.length; i++) {
 function timer(seconds) { //counts time, takes seconds
   let remainTime = Date.now() + (seconds * 1000);
 
-  console.log("remain time: ", seconds);
+  // console.log("remain time: ", seconds);
   displayTimeLeft(seconds);
 
   intervalTimer = setInterval(function () {
     timeLeft = Math.round((remainTime - Date.now()) / 1000);
-    if (timeLeft < 0) {
-      clearInterval(intervalTimer);
-      isStarted = false;
-      setterBtns.forEach(function (btn) {
-        btn.disabled = false;
-        btn.style.opacity = 1;
-      });
-      displayTimeLeft(wholeTime);
-      pauseBtn.classList.remove('pause');
-      pauseBtn.classList.add('play');
-      return;
+    if (timeLeft == 0) {
+      isPaused = false;
+      pauseTimer();
+      showAlert(`Nice try, the correct word is ${targetWord?.toUpperCase()}`, 2000);
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
     }
+    //   clearInterval(intervalTimer);
+    //   isStarted = false;
+    //   setterBtns.forEach(function (btn) {
+    //     btn.disabled = false;
+    //     btn.style.opacity = 1;
+    //   });
+    //   displayTimeLeft(wholeTime);
+    //   // pauseBtn.classList.remove('pause');
+    //   // pauseBtn.classList.add('play');
+    //   return;
+
+    // }
     displayTimeLeft(timeLeft);
   }, 1000);
 }
-pauseBtn.addEventListener('click', pauseTimer);
+// pauseBtn.addEventListener('click', pauseTimer);

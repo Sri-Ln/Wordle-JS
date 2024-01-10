@@ -331,7 +331,7 @@ button[data-setter]:hover { opacity: 0.5; }
 .setters {
   position: absolute;
   left: 85px;
-  top: 75px;
+  top: 95px;
 }
 .minutes-set {
   float: left;
@@ -341,7 +341,7 @@ button[data-setter]:hover { opacity: 0.5; }
 .controlls {
   position: absolute;
   left: 75px;
-  top: 105px;
+  top: 120px;
   text-align: center;
 }
 .display-remain-time {
