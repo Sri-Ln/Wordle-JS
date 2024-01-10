@@ -13083,10 +13083,18 @@ function handleMouseClick(e) {
 
   if (e.target.matches("[data-next]")) {
     //condition to clear out data and play next game
-    let initialTime = 120;
-    let minTime = 30; // Minimum time allowed
+    // let initialTime = 120;
+    // let minTime = 30; // Minimum time allowed
+    let newTime = 120;
     // Calculate the new time based on the number of wins
-    let newTime = Math.max(minTime, initialTime / Math.pow(2, Math.floor(numberOfGameWin / 2)));
+    if (numberOfGameWin > 9) {
+      newTime = 10
+    } else if (numberOfGameWin > 5) {
+      newTime = 30
+    } else if (numberOfGameWin > 1) {
+      newTime = 60
+    }
+    // let newTime = Math.max(minTime, initialTime / Math.pow(2, Math.floor(numberOfGameWin / 2)));
     // Update the time values and display the updated time
     update(wholeTime, newTime);
     update(timeLeft, newTime);
@@ -13124,7 +13132,15 @@ function pauseTimer(event) {
     let initialTime = 120;
     let minTime = 30; // Minimum time allowed
     // Calculate the new time based on the number of wins
-    let newTime = Math.max(minTime, initialTime / Math.pow(2, Math.floor(numberOfGameWin / 2)));
+    let newTime = 120;
+    // Calculate the new time based on the number of wins
+    if (numberOfGameWin > 9) {
+      newTime = 10
+    } else if (numberOfGameWin > 5) {
+      newTime = 30
+    } else if (numberOfGameWin > 1) {
+      newTime = 60
+    }
     // Update the time values and display the updated time
     update(wholeTime, newTime);
     update(timeLeft, newTime);
